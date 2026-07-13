@@ -3,6 +3,10 @@ const path = require('node:path');
 
 const APP_URL = 'https://pontovirtual.secullum.com.br/';
 const APP_ORIGIN = new URL(APP_URL).origin;
+const INTERNAL_ORIGINS = new Set([
+  APP_ORIGIN,
+  'https://autenticador.secullum.com.br'
+]);
 const OFFLINE_PAGE = path.join(__dirname, 'offline.html');
 const ALLOWED_PERMISSIONS = new Set([
   'camera',
@@ -12,7 +16,15 @@ const ALLOWED_PERMISSIONS = new Set([
   'notifications'
 ]);
 
-function isAllowedAppUrl(url) {
+function isInternalUrl(url) {
+  try {
+    return INTERNAL_ORIGINS.has(new URL(url).origin);
+  } catch {
+    return false;
+  }
+}
+
+function isAppUrl(url) {
   try {
     return new URL(url).origin === APP_ORIGIN;
   } catch {
@@ -53,16 +65,16 @@ function configurePermissions() {
 
   defaultSession.setPermissionRequestHandler((webContents, permission, callback, details) => {
     const requestingUrl = details.requestingUrl || webContents.getURL();
-    callback(ALLOWED_PERMISSIONS.has(permission) && isAllowedAppUrl(requestingUrl));
+    callback(ALLOWED_PERMISSIONS.has(permission) && isAppUrl(requestingUrl));
   });
 
   defaultSession.setPermissionCheckHandler((webContents, permission, requestingOrigin, details) => {
     const requestingUrl = requestingOrigin || details?.requestingUrl || webContents?.getURL();
-    return ALLOWED_PERMISSIONS.has(permission) && isAllowedAppUrl(requestingUrl);
+    return ALLOWED_PERMISSIONS.has(permission) && isAppUrl(requestingUrl);
   });
 
   defaultSession.setDevicePermissionHandler(({ origin, deviceType }) => {
-    return isAllowedAppUrl(origin) && ['camera', 'media', 'microphone'].includes(deviceType);
+    return isAppUrl(origin) && ['camera', 'media', 'microphone'].includes(deviceType);
   });
 }
 
@@ -75,7 +87,7 @@ function configureOfflineRetry() {
     }
 
     await loadAppOrOffline(mainWindow);
-    return isAllowedAppUrl(mainWindow.webContents.getURL());
+    return isAppUrl(mainWindow.webContents.getURL());
   });
 }
 
@@ -99,7 +111,7 @@ function createMainWindow() {
   loadAppOrOffline(mainWindow);
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (isAllowedAppUrl(url)) {
+    if (isInternalUrl(url)) {
       return { action: 'allow' };
     }
 
@@ -108,7 +120,7 @@ function createMainWindow() {
   });
 
   mainWindow.webContents.on('will-navigate', (event, url) => {
-    if (isAllowedAppUrl(url)) {
+    if (isInternalUrl(url)) {
       return;
     }
 
@@ -121,7 +133,7 @@ function createMainWindow() {
   });
 
   mainWindow.webContents.on('did-fail-load', (_event, _errorCode, _errorDescription, validatedUrl) => {
-    if (isAllowedAppUrl(validatedUrl)) {
+    if (isInternalUrl(validatedUrl)) {
       mainWindow.loadFile(OFFLINE_PAGE);
     }
   });

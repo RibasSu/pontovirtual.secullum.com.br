@@ -1,7 +1,7 @@
 {
   "name": "ponto-virtual-secullum-desktop",
   "version": "1.0.0",
-  "description": "Aplicativo desktop Windows para o Ponto Virtual Secullum.",
+  "description": "Aplicativo desktop para o Ponto Virtual Secullum.",
   "main": "src/main.js",
   "author": "Ponto Virtual Secullum",
   "license": "UNLICENSED",
@@ -11,6 +11,9 @@
     "start": "electron .",
     "dist": "electron-builder",
     "dist:win": "electron-builder --win zip",
+    "dist:linux": "electron-builder --linux AppImage deb",
+    "dist:linux:tar": "electron-builder --linux tar.gz",
+    "dist:all": "bun run dist:win && bun run dist:linux",
     "dist:win:installer": "electron-builder --win nsis portable"
   },
   "build": {
@@ -26,8 +29,15 @@
     "win": {
       "signAndEditExecutable": false,
       "target": [
-        "nsis",
-        "portable"
+        "zip"
+      ]
+    },
+    "linux": {
+      "category": "Office",
+      "maintainer": "Ponto Virtual Secullum <noreply@secullum.com.br>",
+      "target": [
+        "AppImage",
+        "deb"
       ]
     },
     "nsis": {
