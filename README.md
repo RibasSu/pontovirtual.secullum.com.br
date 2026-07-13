@@ -15,7 +15,7 @@ bun start
 bun run dist:win
 ```
 
-Os arquivos gerados ficam em `dist/`. Por padrão, esse comando gera um `.zip` portable para Windows.
+Os arquivos gerados ficam em `dist/`. Por padrão, esse comando gera um instalador `.exe` único para Windows.
 
 ## Gerar app para Linux
 
@@ -31,13 +31,23 @@ Esse comando gera um AppImage e um pacote `.deb` em `dist/`.
 bun run dist:all
 ```
 
-Para gerar instalador `.exe` com NSIS:
+Para gerar `.zip` portable manual:
 
 ```bash
-bun run dist:win:installer
+bun run dist:win:zip
 ```
 
-Em Linux, o instalador NSIS precisa de `wine`. Em Windows, ele pode ser gerado diretamente.
+Em Linux, o `.exe` NSIS precisa de `wine`. Em Windows, ele pode ser gerado diretamente.
+
+## Publicar atualização
+
+```bash
+bun run dist:release
+```
+
+Esse comando publica os artefatos no GitHub Releases de `RibasSu/pontovirtual.secullum.com.br`.
+Para publicar, configure `GH_TOKEN` no ambiente com permissão de release.
+No Windows, a atualização automática funciona com o instalador `.exe` NSIS; o `.zip` portable é apenas para distribuição manual.
 
 ## Observações
 
@@ -48,4 +58,5 @@ Em Linux, o instalador NSIS precisa de `wine`. Em Windows, ele pode ser gerado d
 - A cor da marca usada na interface offline é `#ffcc1a`.
 - O login em `https://autenticador.secullum.com.br/` permanece dentro da janela do app.
 - Links fora dos domínios internos do app abrem no navegador padrão.
+- O app verifica atualizações automaticamente pelo GitHub Releases quando está empacotado.
 - Recarregar, zoom e tela cheia ficam disponíveis no menu do aplicativo.

@@ -1,4 +1,5 @@
-const { app, BrowserWindow, Menu, ipcMain, session, shell } = require('electron');
+const { app, BrowserWindow, Menu, dialog, ipcMain, session, shell } = require('electron');
+const { autoUpdater } = require('electron-updater');
 const path = require('node:path');
 
 const APP_URL = 'https://pontovirtual.secullum.com.br/';
@@ -92,6 +93,35 @@ function configureOfflineRetry() {
   });
 }
 
+function configureAutoUpdates(mainWindow) {
+  if (!app.isPackaged) {
+    return;
+  }
+
+  autoUpdater.autoDownload = true;
+  autoUpdater.autoInstallOnAppQuit = true;
+
+  autoUpdater.on('update-downloaded', async () => {
+    const result = await dialog.showMessageBox(mainWindow, {
+      type: 'info',
+      buttons: ['Reiniciar agora', 'Depois'],
+      defaultId: 0,
+      cancelId: 1,
+      title: 'Atualização disponível',
+      message: 'Uma nova versão do Ponto Virtual Secullum foi baixada.',
+      detail: 'Reinicie o aplicativo para concluir a atualização.'
+    });
+
+    if (result.response === 0) {
+      autoUpdater.quitAndInstall();
+    }
+  });
+
+  setTimeout(() => {
+    autoUpdater.checkForUpdatesAndNotify().catch(() => {});
+  }, 5000);
+}
+
 function createMainWindow() {
   const mainWindow = new BrowserWindow({
     width: 1200,
@@ -111,6 +141,7 @@ function createMainWindow() {
   });
 
   loadAppOrOffline(mainWindow);
+  configureAutoUpdates(mainWindow);
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     if (isInternalUrl(url)) {

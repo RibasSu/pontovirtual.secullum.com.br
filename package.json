@@ -6,15 +6,20 @@
   "author": "Ponto Virtual Secullum",
   "license": "UNLICENSED",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RibasSu/pontovirtual.secullum.com.br.git"
+  },
   "packageManager": "bun@1.3.14",
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder",
-    "dist:win": "electron-builder --win zip",
+    "dist:win": "electron-builder --win nsis",
+    "dist:win:zip": "electron-builder --win zip",
     "dist:linux": "electron-builder --linux AppImage deb",
     "dist:linux:tar": "electron-builder --linux tar.gz",
     "dist:all": "bun run dist:win && bun run dist:linux",
-    "dist:win:installer": "electron-builder --win nsis portable"
+    "dist:release": "electron-builder --win nsis --linux AppImage deb --publish always"
   },
   "build": {
     "appId": "br.com.secullum.pontovirtual",
@@ -22,6 +27,13 @@
     "directories": {
       "output": "dist"
     },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "RibasSu",
+        "repo": "pontovirtual.secullum.com.br"
+      }
+    ],
     "files": [
       "src/**/*",
       "package.json"
@@ -30,7 +42,7 @@
       "icon": "build/icon.ico",
       "signAndEditExecutable": false,
       "target": [
-        "zip"
+        "nsis"
       ]
     },
     "linux": {
@@ -46,6 +58,7 @@
       "oneClick": false,
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "Ponto Virtual Secullum"
@@ -54,5 +67,8 @@
   "devDependencies": {
     "electron": "^32.3.3",
     "electron-builder": "^25.1.8"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.9"
   }
 }
