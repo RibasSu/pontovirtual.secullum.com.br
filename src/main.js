@@ -8,6 +8,7 @@ const INTERNAL_ORIGINS = new Set([
   'https://autenticador.secullum.com.br'
 ]);
 const OFFLINE_PAGE = path.join(__dirname, 'offline.html');
+const APP_ICON = path.join(__dirname, 'icon.png');
 const ALLOWED_PERMISSIONS = new Set([
   'camera',
   'geolocation',
@@ -98,6 +99,7 @@ function createMainWindow() {
     minWidth: 960,
     minHeight: 640,
     title: 'Ponto Virtual Secullum',
+    icon: APP_ICON,
     autoHideMenuBar: true,
     backgroundColor: '#ffffff',
     webPreferences: {

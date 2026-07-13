@@ -27,6 +27,7 @@
       "package.json"
     ],
     "win": {
+      "icon": "build/icon.ico",
       "signAndEditExecutable": false,
       "target": [
         "zip"
@@ -34,6 +35,7 @@
     },
     "linux": {
       "category": "Office",
+      "icon": "build/icons",
       "maintainer": "Ponto Virtual Secullum <noreply@secullum.com.br>",
       "target": [
         "AppImage",

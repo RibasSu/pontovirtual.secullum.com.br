@@ -44,6 +44,8 @@ Em Linux, o instalador NSIS precisa de `wine`. Em Windows, ele pode ser gerado d
 - O aplicativo depende de internet, pois carrega `https://pontovirtual.secullum.com.br/`.
 - Antes de abrir o site, o aplicativo verifica se existe conexão. Sem internet, ele mostra uma tela local com a opção de tentar novamente.
 - O app libera câmera, microfone, localização e notificações apenas para o domínio do Ponto Virtual Secullum.
+- O app usa a logo oficial de `https://pontovirtual.secullum.com.br/favicon-amarelo.svg` como ícone e na tela offline.
+- A cor da marca usada na interface offline é `#ffcc1a`.
 - O login em `https://autenticador.secullum.com.br/` permanece dentro da janela do app.
 - Links fora dos domínios internos do app abrem no navegador padrão.
 - Recarregar, zoom e tela cheia ficam disponíveis no menu do aplicativo.
